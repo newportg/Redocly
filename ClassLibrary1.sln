@@ -8,6 +8,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0EB1AD4C-3A9
 		src\openapi.yml = src\openapi.yml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D880161C-3C96-48A6-B16A-E822B27ED44E}"
+	ProjectSection(SolutionItems) = preProject
+		openapi.yml = openapi.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
