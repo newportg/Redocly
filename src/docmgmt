@@ -1,0 +1,449 @@
+---
+openapi: 3.0.2
+info:
+  title: Document Management
+  version: 1.0.0
+paths:
+  /document/{id}/{version}:
+    summary: "Get a document by Id, and optionally by specific version"
+    get:
+      parameters:
+      - name: Version
+        description: version
+        schema:
+          type: string
+        in: query
+      responses:
+        "200":
+          $ref: '#/components/responses/GetDocumentResponse'
+        "204":
+          description: "The request was understood, but no data was found "
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: 'The data requested does not exist '
+      description: ""
+    put:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostPutDocumentRequest'
+        required: true
+      responses:
+        "200":
+          $ref: '#/components/responses/PostPutDocumentResponse'
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: "A upload request was not understood. \nor \nFiles doesn’t\
+            \ match the MD5 hash "
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostPutDocumentRequest'
+        required: true
+      responses:
+        "200":
+          $ref: '#/components/responses/PostPutDocumentResponse'
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: "A upload request was not understood. \nor\nFiles doesn’t match\
+            \ the MD5 hash "
+    parameters:
+    - name: id
+      description: Document Identifier
+      schema:
+        type: string
+      in: query
+      required: true
+    - name: Version
+      description: version
+      schema:
+        type: string
+      in: query
+    - name: id
+      in: path
+      required: true
+    - name: version
+      in: path
+      required: true
+  /document/{id}/versions:
+    get:
+      responses:
+        "200":
+          $ref: '#/components/responses/GetDocumentVersionsResponse'
+        "204":
+          description: "The request was understood, but no data was found"
+        "400":
+          description: The data requested does not exist
+    parameters:
+    - name: id
+      in: path
+      required: true
+  /document/entity/{entityType}/{entityId}:
+    get:
+      responses:
+        "200":
+          $ref: '#/components/responses/GetDocumentResponse'
+        "204":
+          description: "The request was understood, but no data was found"
+        "400":
+          description: The data requested does not exist
+    parameters:
+    - examples:
+        EntityType:
+          value: "Contact, Instruction, Requirement, Transaction"
+      name: entityType
+      description: "The type of the EntityId (Contact,Requirement,Instruction,Transaction)"
+      schema:
+        type: string
+      in: path
+      required: true
+    - examples:
+        Guid:
+          value: '"1111-1111-1111-1111"'
+      name: entityId
+      description: Guid
+      schema:
+        type: string
+      in: path
+      required: true
+  /document/unmange/{id}:
+    put:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PutDocumentUnmanageRequest'
+        required: true
+      parameters:
+      - name: id
+        in: path
+        required: true
+      responses:
+        "200":
+          $ref: '#/components/responses/GetDocumentResponse'
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request was not understood
+  /document/entityTypes:
+    get:
+      responses:
+        "200":
+          $ref: '#/components/responses/EntityTypes'
+        "400":
+          description: 'The request was not understood. '
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntityType'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityType'
+          description: Success
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: 'A upload request was not understood. '
+  /documentTypes/{entityType}:
+    get:
+      parameters:
+      - name: entityType
+        schema:
+          type: string
+        in: path
+        required: true
+      responses:
+        "200":
+          $ref: '#/components/responses/DocumentTypes'
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ' A upload request was not understood.'
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentType'
+        required: true
+      parameters:
+      - name: entityType
+        in: path
+        required: true
+      responses:
+        "200":
+          description: Success
+        "400":
+          description: 'A upload request was not understood. '
+components:
+  schemas:
+    GetDocumentResponse:
+      title: Root Type for GetDocumentResponse
+      description: ""
+      type: object
+      properties:
+        fileInfo:
+          type: object
+          properties:
+            filename:
+              type: string
+            document:
+              type: string
+            md5hash:
+              type: string
+            localeIsoCode:
+              type: string
+            documentType:
+              type: string
+            version:
+              type: string
+            versionDate:
+              type: string
+        entityInfo:
+          type: array
+          items:
+            type: object
+            properties:
+              entityType:
+                type: string
+              entityId:
+                type: string
+        externallyManaged:
+          type: object
+          properties:
+            externalApplication:
+              type: string
+            externalDocumentId:
+              type: string
+            datetime:
+              type: string
+      example:
+        fileInfo:
+          filename: string
+          document: string<base64>
+          md5hash: string
+          localeIsoCode: string
+          documentType: string
+          version: integer
+          versionDate: string<datetime>
+        entityInfo:
+        - entityType: string
+          entityId: string<uuid>
+        externallyManaged:
+          externalApplication: string
+          externalDocumentId: string
+          datetime: string<DateTime>
+    PostPutDocumentResponse:
+      title: Root Type for PostPutDocumentResponse
+      description: ""
+      type: object
+      properties:
+        documentId:
+          type: string
+        filename:
+          type: string
+        documentType:
+          type: string
+        version:
+          type: string
+      example:
+        documentId: string<uuid>
+        filename: string
+        documentType: string
+        version: integer
+    PostPutDocumentRequest:
+      title: Root Type for PostPutDocumentRequest
+      description: ""
+      type: object
+      properties:
+        fileInfo:
+          type: object
+          properties:
+            filename:
+              type: string
+            document:
+              type: string
+            md5hash:
+              type: string
+            localeIsoCode:
+              type: string
+            documentType:
+              type: string
+        entityInfo:
+          type: array
+          items:
+            type: object
+            properties:
+              entityType:
+                type: string
+              entityId:
+                type: string
+        notification:
+          type: object
+          properties:
+            method:
+              type: string
+            emailAddress:
+              type: string
+      example:
+        fileInfo:
+          filename: string
+          document: string<base64>
+          md5hash: string
+          localeIsoCode: string
+          documentType: string
+        entityInfo:
+        - entityType: string
+          entityId: string<uuid>
+        notification:
+          method: string Email/Event
+          emailAddress: string Address
+    GetDocumentVersionsResponse:
+      title: Root Type for GetDocumentVersions
+      description: ""
+      type: object
+      properties:
+        documentId:
+          type: string
+        versions:
+          type: array
+          items:
+            type: object
+            properties:
+              version:
+                type: string
+              versionDate:
+                type: string
+      example:
+        documentId: string<uuid>
+        versions:
+        - version: integer
+          versionDate: string<datetime>
+    PutDocumentUnmanageRequest:
+      title: Root Type for PutDocumentUnmanageRequest
+      description: ""
+      type: object
+      properties:
+        externallyManaged:
+          type: object
+          properties:
+            externalApplication:
+              type: string
+            externalDocumentId:
+              type: string
+      example:
+        externallyManaged:
+          externalApplication: string
+          externalDocumentId: string
+    EntityType:
+      title: Root Type for EntityTypeResponse
+      description: ""
+      type: object
+      properties:
+        entityInfo:
+          type: array
+          items:
+            type: object
+            properties:
+              entityType:
+                type: string
+      example:
+        entityInfo:
+        - entityType: string
+    DocumentType:
+      title: Root Type for DocumentType
+      description: ""
+      type: object
+      properties:
+        entityType:
+          type: string
+        documentTypes:
+          type: array
+          items:
+            type: object
+            properties:
+              documentType:
+                type: string
+              fileType:
+                type: string
+      example:
+        entityType: string
+        documentTypes:
+        - documentType: string
+          fileType: string
+    ErrorResponse:
+      title: Root Type for ErrorResponse
+      description: ""
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              value:
+                type: string
+              message:
+                type: string
+      example:
+        errors:
+        - field: string
+          value: string
+          message: string
+  responses:
+    GetDocumentResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetDocumentResponse'
+      description: ""
+    PostPutDocumentResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PostPutDocumentResponse'
+      description: ""
+    GetDocumentVersionsResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetDocumentVersionsResponse'
+      description: ""
+    DocumentTypes:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DocumentType'
+      description: ""
+    EntityTypes:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/EntityType'
+      description: ""
