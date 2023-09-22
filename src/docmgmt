@@ -6,6 +6,7 @@ info:
 paths:
   /document/{id}/{version}:
     summary: "Get a document by Id, and optionally by specific version"
+    description: Blar Blar Blar
     get:
       parameters:
       - name: Version
@@ -24,6 +25,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: 'The data requested does not exist '
+      operationId: GetById
       description: ""
     put:
       requestBody:
@@ -42,6 +44,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: "A upload request was not understood. \nor \nFiles doesn’t\
             \ match the MD5 hash "
+      operationId: PutById
     post:
       requestBody:
         content:
@@ -59,6 +62,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: "A upload request was not understood. \nor\nFiles doesn’t match\
             \ the MD5 hash "
+      operationId: PostById
     parameters:
     - name: id
       description: Document Identifier
@@ -86,6 +90,7 @@ paths:
           description: "The request was understood, but no data was found"
         "400":
           description: The data requested does not exist
+      operationId: GetVersionsById
     parameters:
     - name: id
       in: path
@@ -99,6 +104,7 @@ paths:
           description: "The request was understood, but no data was found"
         "400":
           description: The data requested does not exist
+      operationId: GetEntityTypesByEntityTypeId
     parameters:
     - examples:
         EntityType:
@@ -139,6 +145,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: The request was not understood
+      operationId: PutUnmanageById
   /document/entityTypes:
     get:
       responses:
@@ -146,6 +153,7 @@ paths:
           $ref: '#/components/responses/EntityTypes'
         "400":
           description: 'The request was not understood. '
+      operationId: GetEntityTypes
     post:
       requestBody:
         content:
@@ -166,7 +174,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: 'A upload request was not understood. '
-  /documentTypes/{entityType}:
+      operationId: PostEntityTypes
+  /document/documentTypes/{entityType}:
     get:
       parameters:
       - name: entityType
@@ -183,6 +192,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: ' A upload request was not understood.'
+      operationId: GetDocumentTypesById
     post:
       requestBody:
         content:
@@ -199,6 +209,7 @@ paths:
           description: Success
         "400":
           description: 'A upload request was not understood. '
+      operationId: PostDocumentTypesById
 components:
   schemas:
     GetDocumentResponse:
